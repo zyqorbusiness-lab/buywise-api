@@ -27,7 +27,7 @@ module.exports = async (req, res) => {
         signal: AbortSignal.timeout(40000),
       });
     } catch (e) { continue; }
-    if (r.status === 429) return res.status(429).json({ error: 'busy' });
+    if (r.status === 429) return res.status(429).json({ error: 'busy', model, detail: (await r.text()).slice(0, 400) });
     if (!r.ok) continue;
     const j = await r.json();
     const c = j.candidates && j.candidates[0]; if (!c) continue;
