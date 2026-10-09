@@ -1,8 +1,8 @@
 const { verify, hit } = require('../lib');
 const MODELS = {
-  fast: ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile'],
-  smart: ['llama-3.3-70b-versatile', 'openai/gpt-oss-120b'],
-  smart2: ['openai/gpt-oss-120b', 'llama-3.3-70b-versatile'],
+  fast: ['openai/gpt-oss-20b', 'openai/gpt-oss-120b'],
+  smart: ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'],
+  smart2: ['qwen/qwen3.8-27b', 'openai/gpt-oss-120b'],
 };
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
         try {
           const j = JSON.parse(text);
           const content = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
-          if (content) return res.status(200).json({ content, model });
+          if (content) return res.status(200).json({ content: content.replace(/<think>[\s\S]*?<\/think>/g, '').trim(), model });
         } catch (e) {}
         lastErr = 'empty'; continue;
       }
